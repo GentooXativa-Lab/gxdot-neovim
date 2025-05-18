@@ -38,5 +38,4 @@ return { -- the colorscheme should be available when starting Neovim
 			-- configurations go here
 		},
 	},
-	{ "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" },
 }
