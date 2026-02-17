@@ -42,8 +42,5 @@ return { -- terminal
 			"rcarriga/nvim-notify",
 		},
 	},
-	{ "vim-denops/denops.vim" },
-	{ "https://github.com/skanehira/denops-docker.vim.git" },
-	{ "https://github.com/skanehira/k8s.vim.git" },
 	{ "lambdalisue/vim-suda" },
 }
