@@ -11,19 +11,6 @@ return {
 				"williamboman/mason.nvim",
 				opts = { ensure_installed = { "markdownlint-cli2", "markdown-toc" } },
 			},
-			{
-				"ms-jpq/coq_nvim",
-				branch = "coq",
-			}, -- 9000+ Snippets
-			{
-				"ms-jpq/coq.artifacts",
-				branch = "artifacts",
-			}, -- lua & third party sources -- See https://github.com/ms-jpq/coq.thirdparty
-			-- Need to **configure separately**
-			{
-				"ms-jpq/coq.thirdparty",
-				branch = "3p",
-			},
 			"williamboman/mason-lspconfig.nvim",
 		},
 		config = function()
@@ -33,11 +20,21 @@ return {
 			require("mason").setup()
 			local mason_lspconfig = require("mason-lspconfig")
 			mason_lspconfig.setup({
-				ensure_installed = { "pyright" },
+				ensure_installed = { "pyright", "ts_ls" },
 			})
-			require("lspconfig").pyright.setup({
+
+			-- Neovim 0.11+ native LSP configuration
+			-- Python
+			vim.lsp.config("pyright", {
 				capabilities = capabilities,
 			})
+			vim.lsp.enable("pyright")
+
+			-- TypeScript/JavaScript
+			vim.lsp.config("ts_ls", {
+				capabilities = capabilities,
+			})
+			vim.lsp.enable("ts_ls")
 		end,
 	},
 	{

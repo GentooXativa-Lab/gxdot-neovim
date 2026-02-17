@@ -103,7 +103,7 @@ function M.setup()
     -- Sort automatically by...
     map("n", "<Space>bb", "<Cmd>BufferOrderByBufferNumber<CR>", opt)
     map("n", "<Space>bn", "<Cmd>BufferOrderByName<CR>", opt)
-    map("n", "<Space>bd", "<Cmd>BufferOrderByDirectory<CR>", opt)
+    map("n", "<leader>bD", "<Cmd>BufferOrderByDirectory<CR>", opt)
     map("n", "<Space>bl", "<Cmd>BufferOrderByLanguage<CR>", opt)
     map("n", "<Space>bw", "<Cmd>BufferOrderByWindowNumber<CR>", opt)
 
@@ -147,7 +147,6 @@ end
 -- Snacks keybindings
 function M.setup_snacks_keybindings()
     local map = vim.keymap.set
-    local snacks_util_available = pcall(require, "snacks.util")
 
     -- General keybindings
     map("n", "<leader><space>", "<cmd>Telescope smart_files<cr>", { desc = "Smart Find Files" })
@@ -222,23 +221,30 @@ function M.setup_snacks_keybindings()
     map({"n", "t"}, "[[", "<cmd>tabprevious<cr>", { desc = "Prev Reference" })
     map("n", "<leader>N", "<cmd>Neovim<cr>", { desc = "Neovim News" })
     
-    -- Only add snacks.util dependent keybindings if the module is available
-    if snacks_util_available then
-        local snacks_util = require("snacks.util")
-        
-        map("n", "<leader>.", function() snacks_util.scratch.toggle() end, { desc = "Toggle Scratch Buffer" })
-        map("n", "<leader>S", function() snacks_util.scratch.select() end, { desc = "Select Scratch Buffer" })
-        map("n", "<leader>cR", function() snacks_util.rename_file() end, { desc = "Rename File" })
-        map("n", "<leader>us", function() snacks_util.toggle("spell") end, { desc = "Toggle Spelling" })
-        map("n", "<leader>uw", function() snacks_util.toggle("wrap") end, { desc = "Toggle Wrap" })
-        map("n", "<leader>uL", function() snacks_util.toggle("relativenumber") end, { desc = "Toggle Relative Number" })
-        map("n", "<leader>ud", function() snacks_util.toggle_diagnostics() end, { desc = "Toggle Diagnostics" })
-        map("n", "<leader>ul", function() snacks_util.toggle.number() end, { desc = "Toggle Line Number" })
-        map("n", "<leader>uc", function() snacks_util.toggle.conceallevel() end, { desc = "Toggle Conceallevel" })
-        map("n", "<leader>ub", function() snacks_util.toggle_background() end, { desc = "Toggle Dark Background" })
-        map("n", "<leader>ug", function() snacks_util.toggle("showtabline", 0, 2) end, { desc = "Toggle Indent" })
-        map("n", "<leader>uD", snacks_util.toggle_dim, { desc = "Toggle Dim" })
-    end
+    -- Snacks features (<leader>S prefix)
+    map("n", "<leader>Sn", function() Snacks.notifier.show_history() end, { desc = "Notification History" })
+    map("n", "<leader>Sd", function() Snacks.notifier.hide() end, { desc = "Dismiss Notifications" })
+    map("n", "<leader>Se", function() Snacks.explorer() end, { desc = "Toggle Explorer" })
+    map("n", "<leader>Ss", function() Snacks.scratch() end, { desc = "Scratch Buffer" })
+    map("n", "<leader>SS", function() Snacks.scratch.select() end, { desc = "Select Scratch Buffer" })
+    map("n", "<leader>Sg", function() Snacks.lazygit() end, { desc = "Lazygit" })
+    map("n", "<leader>Sl", function() Snacks.lazygit.log() end, { desc = "Git Log (Lazygit)" })
+    map("n", "<leader>Sf", function() Snacks.lazygit.log_file() end, { desc = "Git File Log" })
+    map("n", "<leader>Sb", function() Snacks.git.blame_line() end, { desc = "Git Blame Line" })
+    map("n", "<leader>St", function() Snacks.terminal() end, { desc = "Terminal" })
+    map("n", "<leader>Sz", function() Snacks.zen() end, { desc = "Zen Mode" })
+    map("n", "<leader>SD", function() Snacks.dim() end, { desc = "Toggle Dim" })
+    map("n", "<leader>Sp", function() Snacks.profiler.scratch() end, { desc = "Profiler" })
+
+    -- Snacks toggles (<leader>u prefix)
+    map("n", "<leader>us", function() Snacks.toggle("spell"):toggle() end, { desc = "Toggle Spelling" })
+    map("n", "<leader>uw", function() Snacks.toggle("wrap"):toggle() end, { desc = "Toggle Wrap" })
+    map("n", "<leader>uL", function() Snacks.toggle("relativenumber"):toggle() end, { desc = "Toggle Relative Number" })
+    map("n", "<leader>ud", function() Snacks.toggle.diagnostics():toggle() end, { desc = "Toggle Diagnostics" })
+    map("n", "<leader>ul", function() Snacks.toggle.line_number():toggle() end, { desc = "Toggle Line Number" })
+    map("n", "<leader>uc", function() Snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):toggle() end, { desc = "Toggle Conceallevel" })
+    map("n", "<leader>ub", function() Snacks.toggle.option("background", { off = "light", on = "dark" }):toggle() end, { desc = "Toggle Dark Background" })
+    map("n", "<leader>cR", function() Snacks.rename.rename_file() end, { desc = "Rename File" })
     
     -- Add inlay hints toggle which doesn't depend on snacks
     map("n", "<leader>uh", function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end, { desc = "Toggle Inlay Hints" })

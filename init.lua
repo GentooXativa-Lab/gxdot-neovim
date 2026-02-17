@@ -1,41 +1,13 @@
 -- vim: ts=2 sts=2 sw=2 et
 --
--- Load keybindings first
+-- Load core options
+require("config.options")
+
+-- Load keybindings
 require("config.keybindings").setup()
 
 -- Bootstrap lazy.nvim
 require("config.lazy")
-
-require("coq_3p")({{
-    src = "builtin/ada"
-}, {
-    src = "builtin/c"
-}, {
-    src = "builtin/clojure"
-}, {
-    src = "builtin/css"
-}, {
-    src = "builtin/haskell"
-}, {
-    src = "builtin/html"
-}, {
-    src = "builtin/js"
-}, {
-    src = "builtin/php"
-}, {
-    src = "builtin/syntax"
-}, {
-    src = "builtin/xml"
-}, {
-    src = "cow",
-    trigger = "!cow"
-}, {
-    src = "figlet",
-    short_name = "BIG"
-}, {
-    src = "orgmode",
-    short_name = "ORG"
-}})
 
 -- Initialize DAP configuration
 require("config.dap_config").setup()
@@ -68,65 +40,6 @@ require("noice").setup({
 })
 
 -- DAP UI listeners are now configured in config/dap_config.lua
-
--- ANTHROPIC SETUP for codecompanion
--- require("codecompanion").setup({
---     strategies = {
---         chat = {
---             adapter = "anthropic"
---         },
---         inline = {
---             adapter = "anthropic"
---         }
---     },
---     adapters = {
---         anthropic = function()
---             return require("codecompanion.adapters").extend("anthropic", {
---                 env = {
---                     api_key = "cmd:age -d -i ~/.ssh/id_rsa ~/.config/gentooxativa/neovim.enc"
---                 }
---             })
---         end
---     }
--- })
-
-require("codecompanion").setup({
-    strategies = {
-        chat = {
-            adapter = "ollama"
-        },
-        inline = {
-            adapter = "ollama"
-        }
-    },
-    adapters = {
-        ollama = function()
-            return require("codecompanion.adapters").extend("ollama", {
-                -- env = {
-                --     url = "url",
-                --     api_key = "example-api-key"
-                -- },
-                -- headers = {
-                --     ["Content-Type"] = "application/json",
-                --     ["Authorization"] = "Basic ${api_key}"
-                -- },
-                env = {
-                    url = "cmd:age -d -i ~/.ssh/id_rsa ~/.config/gentooxativa/ollama_host.enc",
-                },
-                headers = {
-                    ["Content-Type"] = "application/json",
-                },
-
-                parameters = {
-                    sync = true
-                }
-            })
-        end
-    },
-    opts = {
-        log_level = "TRACE", -- or "TRACE"
-    }
-})
 
 vim.g.barbar_auto_setup = false -- disable auto-setup
 
