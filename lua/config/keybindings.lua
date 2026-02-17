@@ -219,6 +219,7 @@ function M.setup_snacks_keybindings()
     map({"n", "t"}, "<c-_>", "<cmd>ToggleTerm<cr>", { desc = "Toggle Terminal" })
     map({"n", "t"}, "]]", "<cmd>tabnext<cr>", { desc = "Next Reference" })
     map({"n", "t"}, "[[", "<cmd>tabprevious<cr>", { desc = "Prev Reference" })
+    map("t", "<C-t>", "<C-\\><C-n>", { desc = "Exit Terminal Mode" })
     map("n", "<leader>N", "<cmd>Neovim<cr>", { desc = "Neovim News" })
     
     -- Snacks features (<leader>S prefix)
