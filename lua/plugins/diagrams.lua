@@ -33,6 +33,7 @@ return {
 	},
 	{
 		"3rd/image.nvim",
+		cond = not vim.env.TMUX,
 		ft = "markdown",
 		opts = {
 			default = {

@@ -56,4 +56,9 @@ return {
 		event = "VeryLazy",
 		dependencies = { "mfussenegger/nvim-dap", "nvim-telescope/telescope.nvim" },
 	},
+    {
+        "nvim-telescope/telescope-symbols.nvim",
+        event = "VeryLazy",
+        dependencies = { "nvim-telescope/telescope.nvim" }
+    }
 }
