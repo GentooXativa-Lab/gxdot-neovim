@@ -12,7 +12,7 @@ local opt = {
 -- Initialize keybindings
 function M.setup()
     local map = vim.api.nvim_set_keymap
-    
+
     -- Set leader keys
     vim.g.mapleader = " "
     vim.g.maplocalleader = " "
@@ -23,7 +23,7 @@ function M.setup()
     map("n", "<leader>tc", "<cmd>:Telescope commands<CR>", opt)
     map("n", "<leader>tv", "<cmd>:Telescope dap variables<CR>", opt)
     map("n", "<leader>pp", "<cmd>:VenvSelect<CR>", opt)
-    
+
     -- Debug related keybindings
     map("n", "<F5>", '<cmd>lua require("dap").continue()<CR>', opt)
     map("i", "<F5>", '<cmd>lua require("dap").continue()<CR>', opt)
@@ -33,9 +33,9 @@ function M.setup()
     map("i", "<F7>", '<cmd>lua require("dap").step_into()<CR>', opt)
     map("n", "<F8>", '<cmd>lua require("dap").step_out()<CR>', opt)
     map("i", "<F8>", '<cmd>lua require("dap").step_out()<CR>', opt)
-    
+
     map("n", "<leader>Vc", ':source $MYVIMRC<CR>', opt)
-    
+
     map("n", "<leader>Di", '<cmd>lua require("dapui").float_element()<CR>', opt)
     map("n", "<leader>dt", '<cmd>lua require("dapui").toggle()<CR>', opt)
     map("n", "<leader>De", '<cmd>lua require("dapui").eval()<CR>', opt)
@@ -53,31 +53,31 @@ function M.setup()
     map("n", "<leader>dw", '<cmd>lua require("dapui").elements.watches.add(vim.fn.expand("<cword>"))<CR>', opt)
     map("n", "<leader>dpc", '<cmd>lua require("dap-python").test_class()<CR>', opt)
     map("n", "<leader>dps", '<cmd>lua require("dap-python").debug_selection()<CR>', opt)
-    
+
     -- Copilot keybindings
     vim.keymap.set("i", "<A-c>", 'copilot#Accept("\\<CR>")', {
         expr = true,
         replace_keycodes = false
     })
     vim.g.copilot_no_tab_map = true
-    
+
     vim.keymap.set('i', '<A-d>', '<Plug>(copilot-next)')
     vim.keymap.set('i', '<A-a>', '<Plug>(copilot-previous)')
     vim.keymap.set('i', '<A-s>', '<cmd>Copilot panel<CR>')
-    
+
     -- LSP formatting
     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.format()<CR>', opt)
     vim.keymap.set('i', '<F4>', '<cmd>lua vim.lsp.buf.format()<CR>', opt)
-    
+
     -- Barbar keybindings
     -- Move to previous/next
     map("n", "<A-,>", "<Cmd>BufferPrevious<CR>", opt)
     map("n", "<A-.>", "<Cmd>BufferNext<CR>", opt)
-    
+
     -- Re-order to previous/next
     map("n", "<A-<>", "<Cmd>BufferMovePrevious<CR>", opt)
     map("n", "<A->>", "<Cmd>BufferMoveNext<CR>", opt)
-    
+
     -- Goto buffer in position...
     map("n", "<A-1>", "<Cmd>BufferGoto 1<CR>", opt)
     map("n", "<A-2>", "<Cmd>BufferGoto 2<CR>", opt)
@@ -89,17 +89,17 @@ function M.setup()
     map("n", "<A-8>", "<Cmd>BufferGoto 8<CR>", opt)
     map("n", "<A-9>", "<Cmd>BufferGoto 9<CR>", opt)
     map("n", "<A-0>", "<Cmd>BufferLast<CR>", opt)
-    
+
     -- Pin/unpin buffer
     map("n", "<A-p>", "<Cmd>BufferPin<CR>", opt)
-    
+
     -- Close buffer
     map("n", "<A-c>", "<Cmd>BufferClose<CR>", opt)
-    
+
     -- Magic buffer-picking mode
     map("n", "<C-p>", "<Cmd>BufferPick<CR>", opt)
     map("n", "<C-s-p>", "<Cmd>BufferPickDelete<CR>", opt)
-    
+
     -- Sort automatically by...
     map("n", "<Space>bb", "<Cmd>BufferOrderByBufferNumber<CR>", opt)
     map("n", "<Space>bn", "<Cmd>BufferOrderByName<CR>", opt)
@@ -110,7 +110,7 @@ function M.setup()
     -- Add keybindings from other files
     M.setup_markdown_keybindings()
     M.setup_formatter_keybindings()
-    
+
     -- Load snacks keybindings later when the plugin is available
     vim.api.nvim_create_autocmd("User", {
         pattern = "VeryLazy",
@@ -131,16 +131,16 @@ function M.setup_markdown_keybindings()
     })
 
     -- Toggle markdown rendering
-    vim.keymap.set("n", "<leader>um", function() require("various-textobjs").toggleMarkdownConceal() end, 
+    vim.keymap.set("n", "<leader>um", function() require("various-textobjs").toggleMarkdownConceal() end,
         { desc = "Toggle Render Markdown" })
 end
 
 -- Formatter keybindings
 function M.setup_formatter_keybindings()
-    vim.keymap.set("n", "<leader>F", function() require("conform").format({ async = true }) end, 
+    vim.keymap.set("n", "<leader>F", function() require("conform").format({ async = true }) end,
         { desc = "Format buffer (async)" })
-    
-    vim.keymap.set({"n", "v"}, "<leader>C", function() require("conform").format({ async = false }) end, 
+
+    vim.keymap.set({ "n", "v" }, "<leader>C", function() require("conform").format({ async = false }) end,
         { desc = "Format file or range" })
 end
 
@@ -177,7 +177,7 @@ function M.setup_snacks_keybindings()
     map("n", "<leader>sb", "<cmd>Telescope current_buffer_fuzzy_find<cr>", { desc = "Buffer Lines" })
     map("n", "<leader>sB", "<cmd>Telescope grep_string grep_open_files=true<cr>", { desc = "Grep Open Buffers" })
     map("n", "<leader>sg", "<cmd>Telescope live_grep<cr>", { desc = "Grep" })
-    map({"n", "v"}, "<leader>sw", "<cmd>Telescope grep_string<cr>", { desc = "Visual selection or word" })
+    map({ "n", "v" }, "<leader>sw", "<cmd>Telescope grep_string<cr>", { desc = "Visual selection or word" })
     map("n", '<leader>s"', "<cmd>Telescope registers<cr>", { desc = "Registers" })
     map("n", "<leader>s/", "<cmd>Telescope search_history<cr>", { desc = "Search History" })
     map("n", "<leader>sa", "<cmd>Telescope autocommands<cr>", { desc = "Autocmds" })
@@ -212,16 +212,16 @@ function M.setup_snacks_keybindings()
     map("n", "<leader>z", "<cmd>ZenMode<cr>", { desc = "Toggle Zen Mode" })
     map("n", "<leader>Z", "<cmd>WindowsMaximize<cr>", { desc = "Toggle Zoom" })
     map("n", "<leader>bd", "<cmd>bd<cr>", { desc = "Delete Buffer" })
-    map({"n", "v"}, "<leader>gB", ":GBrowse<cr>", { desc = "Git Browse" })
+    map({ "n", "v" }, "<leader>gB", ":GBrowse<cr>", { desc = "Git Browse" })
     map("n", "<leader>gg", "<cmd>LazyGit<cr>", { desc = "Lazygit" })
     map("n", "<leader>un", function() require("notify").dismiss() end, { desc = "Dismiss All Notifications" })
-    map({"n", "t"}, "<c-/>", "<cmd>ToggleTerm<cr>", { desc = "Toggle Terminal" })
-    map({"n", "t"}, "<c-_>", "<cmd>ToggleTerm<cr>", { desc = "Toggle Terminal" })
-    map({"n", "t"}, "]]", "<cmd>tabnext<cr>", { desc = "Next Reference" })
-    map({"n", "t"}, "[[", "<cmd>tabprevious<cr>", { desc = "Prev Reference" })
+    map({ "n", "t" }, "<c-/>", "<cmd>ToggleTerm<cr>", { desc = "Toggle Terminal" })
+    map({ "n", "t" }, "<c-_>", "<cmd>ToggleTerm<cr>", { desc = "Toggle Terminal" })
+    map({ "n", "t" }, "]]", "<cmd>tabnext<cr>", { desc = "Next Reference" })
+    map({ "n", "t" }, "[[", "<cmd>tabprevious<cr>", { desc = "Prev Reference" })
     map("t", "<C-t>", "<C-\\><C-n>", { desc = "Exit Terminal Mode" })
     map("n", "<leader>N", "<cmd>Neovim<cr>", { desc = "Neovim News" })
-    
+
     -- Snacks features (<leader>S prefix)
     map("n", "<leader>Sn", function() Snacks.notifier.show_history() end, { desc = "Notification History" })
     map("n", "<leader>Sd", function() Snacks.notifier.hide() end, { desc = "Dismiss Notifications" })
@@ -243,13 +243,18 @@ function M.setup_snacks_keybindings()
     map("n", "<leader>uL", function() Snacks.toggle("relativenumber"):toggle() end, { desc = "Toggle Relative Number" })
     map("n", "<leader>ud", function() Snacks.toggle.diagnostics():toggle() end, { desc = "Toggle Diagnostics" })
     map("n", "<leader>ul", function() Snacks.toggle.line_number():toggle() end, { desc = "Toggle Line Number" })
-    map("n", "<leader>uc", function() Snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):toggle() end, { desc = "Toggle Conceallevel" })
-    map("n", "<leader>ub", function() Snacks.toggle.option("background", { off = "light", on = "dark" }):toggle() end, { desc = "Toggle Dark Background" })
-    map("n", "<leader>cR", function() Snacks.rename.rename_file() end, { desc = "Rename File" })
-    
+    map("n", "<leader>uc",
+        function() Snacks.toggle.option("conceallevel",
+                { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):toggle() end,
+        { desc = "Toggle Conceallevel" })
+    map("n", "<leader>ub", function() Snacks.toggle.option("background", { off = "light", on = "dark" }):toggle() end,
+        { desc = "Toggle Dark Background" })
+
     -- Add inlay hints toggle which doesn't depend on snacks
-    map("n", "<leader>uh", function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end, { desc = "Toggle Inlay Hints" })
+    map("n", "<leader>uh", function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end,
+        { desc = "Toggle Inlay Hints" })
     map("n", "<leader>uT", "<cmd>TSJToggle<cr>", { desc = "Toggle Treesitter" })
 end
 
 return M
+
