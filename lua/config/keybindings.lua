@@ -17,14 +17,7 @@ function M.setup()
     vim.g.mapleader = " "
     vim.g.maplocalleader = " "
 
-    -- Telescope keybindings
-    map("n", "<leader>tf", "<cmd>:Telescope find_files<CR>", opt)
-    map("n", "<leader>tC", "<cmd>:Telescope dap configurations<CR>", opt)
-    map("n", "<leader>tc", "<cmd>:Telescope commands<CR>", opt)
-    map("n", "<leader>tv", "<cmd>:Telescope dap variables<CR>", opt)
-    map("n", "<leader>pp", "<cmd>:VenvSelect<CR>", opt)
-
-    -- Debug related keybindings
+        -- Debug related keybindings
     map("n", "<F5>", '<cmd>lua require("dap").continue()<CR>', opt)
     map("i", "<F5>", '<cmd>lua require("dap").continue()<CR>', opt)
     map("n", "<F6>", '<cmd>lua require("dap").step_over()<CR>', opt)
@@ -220,7 +213,11 @@ function M.setup_snacks_keybindings()
     map({ "n", "t" }, "]]", "<cmd>tabnext<cr>", { desc = "Next Reference" })
     map({ "n", "t" }, "[[", "<cmd>tabprevious<cr>", { desc = "Prev Reference" })
     map("t", "<C-t>", "<C-\\><C-n>", { desc = "Exit Terminal Mode" })
-    map("n", "<leader>tt", "<cmd>ToggleTerm direction=tab<cr>", { desc = "Terminal in New Tab" })
+    
+    map("n", "<leader>tt", "<cmd>enew | terminal<cr>", { desc = "Terminal in New Tab" })
+    map("n", "<leader>tv", "<cmd>vsplit | terminal<cr>", { desc = "Terminal in Vertical Split" })
+    map("n", "<leader>th", "<cmd>split | terminal<cr>", { desc = "Terminal in Horizontal Split" })
+    
     map("n", "<leader>N", "<cmd>Neovim<cr>", { desc = "Neovim News" })
 
     -- Snacks features (<leader>S prefix)
