@@ -154,7 +154,7 @@ function M.setup_snacks_keybindings()
     map("n", "<leader>/", "<cmd>Telescope live_grep<cr>", { desc = "Grep" })
     map("n", "<leader>:", "<cmd>Telescope command_history<cr>", { desc = "Command History" })
     map("n", "<leader>n", "<cmd>Telescope notify<cr>", { desc = "Notification History" })
-    map("n", "<leader>e", "<cmd>Neotree toggle<cr>", { desc = "File Explorer" })
+    map("n", "<leader>e", function() Snacks.explorer() end, { desc = "Toggle Explorer" })
 
     -- Find keybindings
     map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Buffers" })
@@ -220,6 +220,7 @@ function M.setup_snacks_keybindings()
     map({ "n", "t" }, "]]", "<cmd>tabnext<cr>", { desc = "Next Reference" })
     map({ "n", "t" }, "[[", "<cmd>tabprevious<cr>", { desc = "Prev Reference" })
     map("t", "<C-t>", "<C-\\><C-n>", { desc = "Exit Terminal Mode" })
+    map("n", "<leader>tt", "<cmd>ToggleTerm direction=tab<cr>", { desc = "Terminal in New Tab" })
     map("n", "<leader>N", "<cmd>Neovim<cr>", { desc = "Neovim News" })
 
     -- Snacks features (<leader>S prefix)
@@ -244,8 +245,10 @@ function M.setup_snacks_keybindings()
     map("n", "<leader>ud", function() Snacks.toggle.diagnostics():toggle() end, { desc = "Toggle Diagnostics" })
     map("n", "<leader>ul", function() Snacks.toggle.line_number():toggle() end, { desc = "Toggle Line Number" })
     map("n", "<leader>uc",
-        function() Snacks.toggle.option("conceallevel",
-                { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):toggle() end,
+        function()
+            Snacks.toggle.option("conceallevel",
+                { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):toggle()
+        end,
         { desc = "Toggle Conceallevel" })
     map("n", "<leader>ub", function() Snacks.toggle.option("background", { off = "light", on = "dark" }):toggle() end,
         { desc = "Toggle Dark Background" })
@@ -257,4 +260,3 @@ function M.setup_snacks_keybindings()
 end
 
 return M
-
