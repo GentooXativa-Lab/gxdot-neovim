@@ -43,4 +43,10 @@ return { -- terminal
         },
     },
     { "lambdalisue/vim-suda" },
+    {
+        "andrewferrier/wrapping.nvim",
+        config = function()
+            require("wrapping").setup()
+        end
+    },
 }

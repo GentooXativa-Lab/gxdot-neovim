@@ -17,7 +17,7 @@ function M.setup()
     vim.g.mapleader = " "
     vim.g.maplocalleader = " "
 
-        -- Debug related keybindings
+    -- Debug related keybindings
     map("n", "<F5>", '<cmd>lua require("dap").continue()<CR>', opt)
     map("i", "<F5>", '<cmd>lua require("dap").continue()<CR>', opt)
     map("n", "<F6>", '<cmd>lua require("dap").step_over()<CR>', opt)
@@ -48,7 +48,7 @@ function M.setup()
     map("n", "<leader>dps", '<cmd>lua require("dap-python").debug_selection()<CR>', opt)
 
     -- Copilot keybindings
-    vim.keymap.set("i", "<A-c>", 'copilot#Accept("\\<CR>")', {
+    --[[     vim.keymap.set("i", "<A-c>", 'copilot#Accept("\\<CR>")', {
         expr = true,
         replace_keycodes = false
     })
@@ -57,7 +57,7 @@ function M.setup()
     vim.keymap.set('i', '<A-d>', '<Plug>(copilot-next)')
     vim.keymap.set('i', '<A-a>', '<Plug>(copilot-previous)')
     vim.keymap.set('i', '<A-s>', '<cmd>Copilot panel<CR>')
-
+ ]]
     -- LSP formatting
     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.format()<CR>', opt)
     vim.keymap.set('i', '<F4>', '<cmd>lua vim.lsp.buf.format()<CR>', opt)
@@ -213,11 +213,11 @@ function M.setup_snacks_keybindings()
     map({ "n", "t" }, "]]", "<cmd>tabnext<cr>", { desc = "Next Reference" })
     map({ "n", "t" }, "[[", "<cmd>tabprevious<cr>", { desc = "Prev Reference" })
     map("t", "<C-t>", "<C-\\><C-n>", { desc = "Exit Terminal Mode" })
-    
+
     map("n", "<leader>tt", "<cmd>enew | terminal<cr>", { desc = "Terminal in New Tab" })
     map("n", "<leader>tv", "<cmd>vsplit | terminal<cr>", { desc = "Terminal in Vertical Split" })
     map("n", "<leader>th", "<cmd>split | terminal<cr>", { desc = "Terminal in Horizontal Split" })
-    
+
     map("n", "<leader>N", "<cmd>Neovim<cr>", { desc = "Neovim News" })
 
     -- Snacks features (<leader>S prefix)
