@@ -73,11 +73,4 @@ vim.api.nvim_create_autocmd("User", {
     end
 })
 
-vim.api.nvim_create_autocmd("BufWritePre", {
-    pattern = "*",
-    callback = function(args)
-        require("conform").format({
-            bufnr = args.buf
-        })
-    end
-})
+-- format-on-save is configured in lua/plugins/formatter.lua via conform.setup{format_on_save}

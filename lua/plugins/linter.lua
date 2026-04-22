@@ -1,33 +1,28 @@
 return {
+    {
+        "mfussenegger/nvim-lint",
+        event = { "BufReadPost", "BufNewFile", "BufWritePost" },
+        config = function()
+            local lint = require("lint")
 
--- 	{
---     "jose-elias-alvarez/null-ls.nvim",
---     dependencies = {"nvim-lua/plenary.nvim"},
---     config = function()
---         local null_ls = require("null-ls")
---
---         null_ls.setup({
---             sources = {null_ls.builtins.diagnostics.ruff, null_ls.builtins.formatting.black}
---         })
---     end
--- },
-{
-  "nvimtools/none-ls.nvim",
-  optional = true,
-  opts = function(_, opts)
-    local nls = require("null-ls")
-    opts.sources = vim.list_extend(opts.sources or {}, {
-      nls.builtins.diagnostics.markdownlint_cli2,
-    })
-  end,
-},
-{
-  "mfussenegger/nvim-lint",
-  optional = true,
-  opts = {
-    linters_by_ft = {
-      markdown = { "markdownlint-cli2" },
+            lint.linters_by_ft = {
+                markdown = { "markdownlint-cli2" },
+                sh = { "shellcheck" },
+                bash = { "shellcheck" },
+                terraform = { "tflint" },
+                ["yaml.ansible"] = { "ansible_lint" },
+            }
+
+            local lint_group = vim.api.nvim_create_augroup("UserLint", { clear = true })
+            vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "InsertLeave" }, {
+                group = lint_group,
+                callback = function()
+                    -- skip if no linter for this ft
+                    if lint.linters_by_ft[vim.bo.filetype] then
+                        lint.try_lint()
+                    end
+                end,
+            })
+        end,
     },
-  },
-}
 }

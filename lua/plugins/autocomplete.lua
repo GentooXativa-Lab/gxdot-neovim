@@ -1,56 +1,45 @@
 return {
     {
-        "hrsh7th/nvim-cmp",
-        dependencies = { "hrsh7th/cmp-nvim-lsp", "L3MON4D3/LuaSnip", "saadparwaiz1/cmp_luasnip" },
-        config = function()
-            local has_words_before = function()
-                unpack = unpack or table.unpack
-                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-                return col ~= 0
-                    and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-            end
+        "saghen/blink.cmp",
+        event = "InsertEnter",
+        version = "1.*",
+        dependencies = {
+            { "L3MON4D3/LuaSnip", version = "v2.*" },
+            "rafamadriz/friendly-snippets",
+        },
+        ---@module 'blink.cmp'
+        ---@type blink.cmp.Config
+        opts = {
+            -- Keymap preset:
+            --   'default'    -> <C-y> accept, <C-n>/<C-p> navigate, <C-Space> open/docs, <C-e> hide, Tab/S-Tab jump snippets
+            --   'super-tab'  -> Tab to accept (vscode style)
+            --   'enter'      -> <CR> to accept
+            keymap = { preset = "default" },
 
-            local cmp = require("cmp")
-            local luasnip = require("luasnip")
+            appearance = {
+                nerd_font_variant = "mono",
+            },
 
-            cmp.setup({
-                snippet = {
-                    expand = function(args)
-                        luasnip.lsp_expand(args.body)
-                    end,
-                },
-                completion = {
-                    autocomplete = false,
-                },
-                mapping = cmp.mapping.preset.insert({
-                    ["<Tab>"] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            cmp.select_next_item()
-                        elseif luasnip.expand_or_jumpable() then
-                            luasnip.expand_or_jump()
-                        elseif has_words_before() then
-                            cmp.complete()
-                        else
-                            fallback()
-                        end
-                    end, { "i", "s" }),
-                    ["<S-Tab>"] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            cmp.select_prev_item()
-                        elseif luasnip.jumpable(-1) then
-                            luasnip.jump(-1)
-                        else
-                            fallback()
-                        end
-                    end, { "i", "s" }),
-                    ["<C-e>"] = cmp.mapping.abort(),
-                    ["<CR>"] = cmp.mapping.confirm({ select = true }),
-                }),
-                sources = {
-                    { name = "nvim_lsp" },
-                    { name = "luasnip" },
-                },
-            })
-        end,
+            completion = {
+                -- Auto-show menu while typing (user had autocomplete=false before; we enable auto-popup now)
+                menu = { auto_show = true },
+                -- Only show docs popup on manual trigger (C-Space) to keep UI quiet
+                documentation = { auto_show = true, auto_show_delay_ms = 300 },
+                -- Pre-select first item so <C-y> / <CR> picks it
+                list = { selection = { preselect = true, auto_insert = false } },
+                ghost_text = { enabled = false },
+            },
+
+            signature = { enabled = true },
+
+            snippets = { preset = "luasnip" },
+
+            sources = {
+                default = { "lsp", "path", "snippets", "buffer" },
+            },
+
+            fuzzy = { implementation = "prefer_rust_with_warning" },
+        },
+        opts_extend = { "sources.default" },
     },
 }
