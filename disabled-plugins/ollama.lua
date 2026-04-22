@@ -27,6 +27,6 @@ return {
 
     ---@type Ollama.Config
     opts = {
-        -- your configuration overrides
+        model = "starcoder2:15b"
     }
 }
