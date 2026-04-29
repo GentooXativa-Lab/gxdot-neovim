@@ -44,3 +44,8 @@ opt.mouse = "a"
 -- File handling
 opt.fileencoding = "utf-8"
 opt.hidden = true
+
+-- Project-local config (.nvim.lua / .exrc) — Neovim pide :trust antes de
+-- ejecutar el archivo del proyecto. `secure` bloquea autocmds/shell sospechosos.
+opt.exrc = true
+opt.secure = true

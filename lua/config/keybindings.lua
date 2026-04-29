@@ -47,6 +47,26 @@ function M.setup()
     map("n", "<leader>dpc", '<cmd>lua require("dap-python").test_class()<CR>', opt)
     map("n", "<leader>dps", '<cmd>lua require("dap-python").debug_selection()<CR>', opt)
 
+    -- Conditional breakpoint (prompts for an expression that gates the bp)
+    map("n", "<leader>dB", '<cmd>lua require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))<CR>', opt)
+
+    -- REPL toggle (evaluate arbitrary expressions during a session)
+    map("n", "<leader>dr", '<cmd>lua require("dap").repl.toggle()<CR>', opt)
+
+    -- Hover variable under cursor (no need to add it to watches)
+    map("n", "<leader>dh", '<cmd>lua require("dap.ui.widgets").hover()<CR>', opt)
+
+    -- Clear all breakpoints in all buffers
+    map("n", "<leader>dT", '<cmd>lua require("dap").clear_breakpoints()<CR>', opt)
+
+    -- Restart current frame (re-runs the function from its entry point)
+    map("n", "<leader>dR", '<cmd>lua require("dap").restart_frame()<CR>', opt)
+
+    -- Telescope DAP integrations
+    map("n", "<leader>dF", '<cmd>Telescope dap frames<CR>', opt)
+    map("n", "<leader>dC", '<cmd>Telescope dap configurations<CR>', opt)
+    map("n", "<leader>dV", '<cmd>Telescope dap variables<CR>', opt)
+
     -- Copilot keybindings
     --[[     vim.keymap.set("i", "<A-c>", 'copilot#Accept("\\<CR>")', {
         expr = true,

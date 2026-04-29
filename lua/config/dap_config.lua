@@ -14,8 +14,10 @@ M.setup = function()
     dap_virtual_text.setup()
 
     -- Mason-DAP setup
+    -- `js-debug-adapter` is the Mason package; `vscode-js-debug` is the source repo
+    -- (Microsoft) and is NOT a Mason package — it was silently ignored before.
     mason_dap.setup({
-        ensure_installed = {"cppdbg", "python", "ruff", "copilot-language-server", "vscode-js-debug", "js-debug-adapter"},
+        ensure_installed = {"cppdbg", "python", "ruff", "copilot-language-server", "js-debug-adapter"},
         automatic_installation = true,
         handlers = {
             function(config)
@@ -24,18 +26,21 @@ M.setup = function()
         }
     })
 
-require("dap-vscode-js").setup({
-  node_path = "/home/jvginer/.nvm/versions/node/v22.16.0/bin/node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
-  debugger_path = "/home/jvginer/.local/share/nvim/lazy/vscode-js-debug",
- -- Path to vscode-js-debug installation.
-  -- debugger_cmd = { "js-debug-adapter" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
-  adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }, -- which adapters to register in nvim-dap
-  -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
-  -- log_file_level = false -- Logging level for output to file. Set to false to disable file logging.
-  -- log_console_level = vim.log.levels.ERROR -- Logging level for output to console. Set to false to disable console output.
-})
+    require("dap-vscode-js").setup({
+        -- Use the Node binary from $PATH so nvm/asdf-managed projects pick the right
+        -- version. Override per-project in `.nvim.lua` if a specific node is required.
+        node_path = "node",
+        -- Mason owns the debugger now; the legacy lazy clone is no longer used.
+        debugger_path = vim.fn.stdpath("data") .. "/mason/packages/js-debug-adapter",
+        -- debugger_cmd = { "js-debug-adapter" }, -- takes precedence over node_path/debugger_path
+        adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
+        -- log_file_path = "(stdpath cache)/dap_vscode_js.log"
+        -- log_file_level = false
+        -- log_console_level = vim.log.levels.ERROR
+    })
 
     -- JS/TS adapter configuration
+    -- Note: a project's `.nvim.lua` may push more configs into these tables.
     dap.configurations.javascript = {
         {
             type = "pwa-node",
@@ -45,7 +50,9 @@ require("dap-vscode-js").setup({
             cwd = vim.fn.getcwd(),
             console = "integratedTerminal",
             internalConsoleOptions = "neverOpen",
-            runtimeExecutable = "/home/jvginer/.nvm/versions/node/v22.16.0/bin/node",
+            -- Use the node binary from $PATH (respects nvm/asdf). Override per-project
+            -- in `.nvim.lua` when a specific runtime is required.
+            runtimeExecutable = "node",
             envFile = "${workspaceFolder}/.env",
         },
         {
@@ -57,7 +64,12 @@ require("dap-vscode-js").setup({
         }
     }
 
-    dap.configurations.typescript = dap.configurations.javascript
+    -- IMPORTANT: copy the table so JS and TS get independent arrays. A direct
+    -- assignment (`dap.configurations.typescript = dap.configurations.javascript`)
+    -- aliases the table by reference and causes downstream `table.insert`s
+    -- (e.g. from project-local `.nvim.lua`) to duplicate configs across both filetypes.
+    dap.configurations.typescript = vim.deepcopy(dap.configurations.javascript)
+    dap.configurations.typescriptreact = vim.deepcopy(dap.configurations.javascript)
 
     -- Python adapter configuration
     dap.configurations.python = {
@@ -114,17 +126,18 @@ require("dap-vscode-js").setup({
         dapui.open()
     end
 
-require("dap").adapters["pwa-node"] = {
-  type = "server",
-  host = "localhost",
-  port = "${port}",
-  executable = {
-    command = "js-debug-adapter", -- As I'm using mason, this will be in the path
-    args = {"${port}"},
-  }
-}
+    -- pwa-node adapter — js-debug-adapter is in $PATH thanks to Mason
+    require("dap").adapters["pwa-node"] = {
+        type = "server",
+        host = "localhost",
+        port = "${port}",
+        executable = {
+            command = "js-debug-adapter",
+            args = {"${port}"},
+        }
+    }
 
-    -- Uncomment these if you want DAP UI to close automatically
+    -- Uncomment these if you want DAP UI to close automatically when the session ends
     -- dap.listeners.before.event_terminated.dapui_config = function()
     --     dapui.close()
     -- end

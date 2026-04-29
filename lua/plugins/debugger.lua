@@ -8,13 +8,8 @@ return {
             "mfussenegger/nvim-dap-python",
             "williamboman/mason.nvim",
             "jay-babu/mason-nvim-dap.nvim",
-	"mxsdev/nvim-dap-vscode-js", module = { "dap-vscode-js" } ,
-    {
-      "microsoft/vscode-js-debug",
-      opt = true,
-      run = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out" 
-    },
-    },
+            "mxsdev/nvim-dap-vscode-js",
+        },
         config = function()
             -- DAP configuration is now in a separate file
             -- See lua/config/dap_config.lua
@@ -110,9 +105,4 @@ return {
             "williamboman/mason.nvim",
         },
     },
-    {
-	    "mfussenegger/nvim-dap",
-	    "mxsdev/nvim-dap-vscode-js",
-	    "microsoft/vscode-js-debug",
-    }
 }
