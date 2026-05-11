@@ -10,11 +10,16 @@ return {
         ---@module 'blink.cmp'
         ---@type blink.cmp.Config
         opts = {
-            -- Keymap preset:
-            --   'default'    -> <C-y> accept, <C-n>/<C-p> navigate, <C-Space> open/docs, <C-e> hide, Tab/S-Tab jump snippets
-            --   'super-tab'  -> Tab to accept (vscode style)
-            --   'enter'      -> <CR> to accept
-            keymap = { preset = "default" },
+            -- Keymap: <CR> accepts (preset 'enter'). <Tab>/<S-Tab> are intentionally NOT
+            -- mapped so they fall through to Neovim's native indent behaviour in insert
+            -- mode. Menu navigation is bound to <F3>/<F2> and additionally to <C-n>/<C-p>.
+            keymap = {
+                preset = "enter",
+                ["<F3>"]  = { "show", "select_next", "snippet_forward", "fallback" },
+                ["<F2>"]  = { "show", "select_prev", "snippet_backward", "fallback" },
+                ["<C-n>"] = { "show", "select_next", "fallback" },
+                ["<C-p>"] = { "show", "select_prev", "fallback" },
+            },
 
             appearance = {
                 nerd_font_variant = "mono",

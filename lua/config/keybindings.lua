@@ -67,17 +67,6 @@ function M.setup()
     map("n", "<leader>dC", '<cmd>Telescope dap configurations<CR>', opt)
     map("n", "<leader>dV", '<cmd>Telescope dap variables<CR>', opt)
 
-    -- Copilot keybindings
-    --[[     vim.keymap.set("i", "<A-c>", 'copilot#Accept("\\<CR>")', {
-        expr = true,
-        replace_keycodes = false
-    })
-    vim.g.copilot_no_tab_map = true
-
-    vim.keymap.set('i', '<A-d>', '<Plug>(copilot-next)')
-    vim.keymap.set('i', '<A-a>', '<Plug>(copilot-previous)')
-    vim.keymap.set('i', '<A-s>', '<cmd>Copilot panel<CR>')
- ]]
     -- LSP formatting
     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.format()<CR>', opt)
     vim.keymap.set('i', '<F4>', '<cmd>lua vim.lsp.buf.format()<CR>', opt)

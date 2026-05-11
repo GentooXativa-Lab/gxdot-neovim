@@ -19,6 +19,7 @@ return {
                 "terraformls",
                 "ansiblels",
                 "yamlls",
+                "clangd",
             }
 
             -- Extend default capabilities with blink.cmp for every server
