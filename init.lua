@@ -17,7 +17,7 @@ require("config.dap_config").setup()
 require("telescope").load_extension("dap")
 require("telescope").load_extension("fidget")
 
-require("lualine").setup()
+require("lualine").setup({ options = { theme = "catppuccin" } })
 require("fidget").setup()
 
 require("noice").setup({
