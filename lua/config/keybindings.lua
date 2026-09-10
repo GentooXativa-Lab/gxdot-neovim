@@ -124,17 +124,12 @@ end
 
 -- Markdown keybindings
 function M.setup_markdown_keybindings()
-    -- Setup markdown preview keybindings
-    vim.api.nvim_create_autocmd("FileType", {
-        pattern = "markdown",
-        callback = function()
-            vim.api.nvim_buf_set_keymap(0, "n", "<leader>cp", "<cmd>MarkdownPreviewToggle<CR>", opt)
-        end
-    })
-
-    -- Toggle markdown rendering
-    vim.keymap.set("n", "<leader>um", function() require("various-textobjs").toggleMarkdownConceal() end,
-        { desc = "Toggle Render Markdown" })
+    -- Nothing to map here right now. <leader>cp drove markdown-preview.nvim and
+    -- <leader>um drove various-textobjs; the first now lives in
+    -- disabled-plugins/ and the second was never installed, so both mappings
+    -- only produced errors. Conceal is already on <leader>uc. Move the plugin
+    -- spec back into lua/plugins/ and restore the mapping here if you want the
+    -- preview again.
 end
 
 -- Formatter keybindings
@@ -151,7 +146,7 @@ function M.setup_snacks_keybindings()
     local map = vim.keymap.set
 
     -- General keybindings
-    map("n", "<leader><space>", "<cmd>Telescope smart_files<cr>", { desc = "Smart Find Files" })
+    map("n", "<leader><space>", function() Snacks.picker.smart() end, { desc = "Smart Find Files" })
     map("n", "<leader>,", "<cmd>Telescope buffers<cr>", { desc = "Buffers" })
     map("n", "<leader>/", "<cmd>Telescope live_grep<cr>", { desc = "Grep" })
     map("n", "<leader>:", "<cmd>Telescope command_history<cr>", { desc = "Command History" })
@@ -160,10 +155,11 @@ function M.setup_snacks_keybindings()
 
     -- Find keybindings
     map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Buffers" })
-    map("n", "<leader>fc", "<cmd>Telescope config_files<cr>", { desc = "Find Config File" })
+    map("n", "<leader>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end,
+        { desc = "Find Config File" })
     map("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
     map("n", "<leader>fg", "<cmd>Telescope git_files<cr>", { desc = "Find Git Files" })
-    map("n", "<leader>fp", "<cmd>Telescope projects<cr>", { desc = "Projects" })
+    map("n", "<leader>fp", function() Snacks.picker.projects() end, { desc = "Projects" })
     map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Recent" })
 
     -- Git keybindings
@@ -195,10 +191,10 @@ function M.setup_snacks_keybindings()
     map("n", "<leader>sl", "<cmd>Telescope loclist<cr>", { desc = "Location List" })
     map("n", "<leader>sm", "<cmd>Telescope marks<cr>", { desc = "Marks" })
     map("n", "<leader>sM", "<cmd>Telescope man_pages<cr>", { desc = "Man Pages" })
-    map("n", "<leader>sp", "<cmd>Telescope plugin_specs<cr>", { desc = "Search for Plugin Spec" })
+    map("n", "<leader>sp", function() Snacks.picker.lazy() end, { desc = "Search for Plugin Spec" })
     map("n", "<leader>sq", "<cmd>Telescope quickfix<cr>", { desc = "Quickfix List" })
     map("n", "<leader>sR", "<cmd>Telescope resume<cr>", { desc = "Resume" })
-    map("n", "<leader>su", "<cmd>Telescope undo<cr>", { desc = "Undo History" })
+    map("n", "<leader>su", function() Snacks.picker.undo() end, { desc = "Undo History" })
     map("n", "<leader>uC", "<cmd>Telescope colorscheme<cr>", { desc = "Colorschemes" })
 
     -- LSP keybindings
@@ -211,10 +207,10 @@ function M.setup_snacks_keybindings()
     map("n", "<leader>sS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", { desc = "Workspace Symbols" })
 
     -- Other keybindings
-    map("n", "<leader>z", "<cmd>ZenMode<cr>", { desc = "Toggle Zen Mode" })
-    map("n", "<leader>Z", "<cmd>WindowsMaximize<cr>", { desc = "Toggle Zoom" })
+    map("n", "<leader>z", function() Snacks.zen() end, { desc = "Toggle Zen Mode" })
+    map("n", "<leader>Z", function() Snacks.toggle.zoom():toggle() end, { desc = "Toggle Zoom" })
     map("n", "<leader>bd", "<cmd>bd<cr>", { desc = "Delete Buffer" })
-    map({ "n", "v" }, "<leader>gB", ":GBrowse<cr>", { desc = "Git Browse" })
+    map({ "n", "v" }, "<leader>gB", function() Snacks.gitbrowse() end, { desc = "Git Browse" })
     map("n", "<leader>gg", function() Snacks.lazygit() end, { desc = "Lazygit" })
     map("n", "<leader>un", function() require("notify").dismiss() end, { desc = "Dismiss All Notifications" })
     map({ "n", "t" }, "<c-/>", "<cmd>ToggleTerm<cr>", { desc = "Toggle Terminal" })
@@ -227,7 +223,7 @@ function M.setup_snacks_keybindings()
     map("n", "<leader>tv", "<cmd>vsplit | terminal<cr>", { desc = "Terminal in Vertical Split" })
     map("n", "<leader>th", "<cmd>split | terminal<cr>", { desc = "Terminal in Horizontal Split" })
 
-    map("n", "<leader>N", "<cmd>Neovim<cr>", { desc = "Neovim News" })
+    map("n", "<leader>N", "<cmd>help news<cr>", { desc = "Neovim News" })
 
     -- Snacks features (<leader>S prefix)
     map("n", "<leader>Sn", function() Snacks.notifier.show_history() end, { desc = "Notification History" })
@@ -262,7 +258,7 @@ function M.setup_snacks_keybindings()
     -- Add inlay hints toggle which doesn't depend on snacks
     map("n", "<leader>uh", function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end,
         { desc = "Toggle Inlay Hints" })
-    map("n", "<leader>uT", "<cmd>TSJToggle<cr>", { desc = "Toggle Treesitter" })
+    map("n", "<leader>uT", function() Snacks.toggle.treesitter():toggle() end, { desc = "Toggle Treesitter" })
 end
 
 return M
