@@ -1,22 +1,36 @@
 return {
     {
         "mfussenegger/nvim-dap",
+        -- No event/cmd: the <F5>/<leader>d* mappings in config/keybindings.lua
+        -- all go through require("dap"), which lazy.nvim's module loader picks
+        -- up. Previously dap_config.setup() ran straight from init.lua, which
+        -- pulled the whole debug stack in at startup.
+        lazy = true,
         dependencies = {
-            "rcarriga/nvim-dap-ui",
+            -- nvim-dap-ui is deliberately NOT listed here. As a dependency its
+            -- config runs first and calls dapui.setup(), which require()s dap
+            -- mid-load and loops back into this config
+            -- ("loop or previous error loading module 'dapui'"). It loads on
+            -- its own when dap_config's listeners require it.
             "theHamsta/nvim-dap-virtual-text",
             "nvim-telescope/telescope-dap.nvim",
             "mfussenegger/nvim-dap-python",
-            "williamboman/mason.nvim",
+            "mason-org/mason.nvim",
             "jay-babu/mason-nvim-dap.nvim",
             "mxsdev/nvim-dap-vscode-js",
         },
         config = function()
-            -- DAP configuration is now in a separate file
-            -- See lua/config/dap_config.lua
+            require("config.dap_config").setup()
+            -- Registered here rather than from Telescope's config so that
+            -- opening Telescope doesn't pull in the whole debug stack.
+            pcall(function()
+                require("telescope").load_extension("dap")
+            end)
         end,
     },
     {
         "rcarriga/nvim-dap-ui",
+        lazy = true,
         config = function()
             require("dapui").setup({
                 controls = {
@@ -92,17 +106,20 @@ return {
     },
     {
         "theHamsta/nvim-dap-virtual-text",
+        lazy = true,
         config = function()
             require("nvim-dap-virtual-text").setup()
         end,
     },
     {
         "mfussenegger/nvim-dap-python",
+        lazy = true,
     },
     {
         "jay-babu/mason-nvim-dap.nvim",
+        lazy = true,
         dependencies = {
-            "williamboman/mason.nvim",
+            "mason-org/mason.nvim",
         },
     },
 }
