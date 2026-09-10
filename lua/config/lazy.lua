@@ -18,14 +18,22 @@ require("lazy").setup({
     {
         import = "plugins"
     }},
-    -- Configure any other settings here. See the documentation for more details.
-    -- colorscheme that will be used when installing plugins.
+    -- colorscheme used while installing plugins; only list themes we actually have
     install = {
-        colorscheme = {"habamax", "codecat", "catppuccin", "gruvbox", "tokyonight", "nightfox", "shades_of_purple"}
+        colorscheme = {"onedark", "habamax"}
     },
-    -- automatically check for plugin updates
+    -- automatically check for plugin updates, but don't nag about them at startup
     checker = {
-        enabled = true
+        enabled = true,
+        notify = false
     },
-    library = {"nvim-dap-ui"}
+    change_detection = {
+        notify = false
+    },
+    -- No plugin needs luarocks any more (neorg was the only one), so don't let
+    -- lazy.nvim bootstrap hererocks: it only leaves a broken luarocks in
+    -- :checkhealth.
+    rocks = {
+        enabled = false
+    }
 })
