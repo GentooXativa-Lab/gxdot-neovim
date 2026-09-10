@@ -1,6 +1,11 @@
 return {
     {
         "nvim-telescope/telescope.nvim",
+        -- Loaded through :Telescope alone. The `keys` block that used to live
+        -- here duplicated lua/config/keybindings.lua, and two of its mappings
+        -- pointed somewhere else entirely (<leader><space> -> buffers vs
+        -- smart_files, <leader>sw -> workspace symbols vs grep_string), with
+        -- keybindings.lua silently winning because it maps later on VeryLazy.
         cmd = "Telescope",
         version = false,
         dependencies = {
@@ -9,33 +14,6 @@ return {
             -- at startup and drag Telescope in with it.
             { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
             "nvim-telescope/telescope-symbols.nvim",
-        },
-        keys = {
-            {
-                "<leader>sf",
-                "<cmd>Telescope git_files<cr>",
-                desc = "Find Files (root dir)",
-            },
-            {
-                "<leader><space>",
-                "<cmd>Telescope buffers<cr>",
-                desc = "Find Buffers",
-            },
-            {
-                "<leader>sg",
-                "<cmd>Telescope live_grep<cr>",
-                desc = "Search Project",
-            },
-            {
-                "<leader>ss",
-                "<cmd>Telescope lsp_document_symbols<cr>",
-                desc = "Search Document Symbols",
-            },
-            {
-                "<leader>sw",
-                "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-                desc = "Search Workspace Symbols",
-            },
         },
         opts = {
             extensions = {
