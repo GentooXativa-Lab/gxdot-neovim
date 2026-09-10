@@ -1,10 +1,13 @@
 local M = {}
 
 M.setup = function()
+    -- Resolved at runtime: hardcoding an nvm version breaks on every Node upgrade.
+    local node_path = vim.fn.exepath("node")
+    local js_debug_path = vim.fn.stdpath("data") .. "/lazy/vscode-js-debug"
+
     local dap = require("dap")
     local mason_dap = require("mason-nvim-dap")
     local dap_virtual_text = require("nvim-dap-virtual-text")
-    local ui = require("dapui")
 
     -- Setup dap-python
     require("dap-python").setup("uv")
@@ -24,9 +27,9 @@ M.setup = function()
         }
     })
 
-require("dap-vscode-js").setup({
-  node_path = "/home/jvginer/.nvm/versions/node/v22.16.0/bin/node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
-  debugger_path = "/home/jvginer/.local/share/nvim/lazy/vscode-js-debug",
+    require("dap-vscode-js").setup({
+  node_path = node_path, -- resolved from $PATH
+  debugger_path = js_debug_path,
  -- Path to vscode-js-debug installation.
   -- debugger_cmd = { "js-debug-adapter" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
   adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }, -- which adapters to register in nvim-dap
@@ -45,7 +48,7 @@ require("dap-vscode-js").setup({
             cwd = vim.fn.getcwd(),
             console = "integratedTerminal",
             internalConsoleOptions = "neverOpen",
-            runtimeExecutable = "/home/jvginer/.nvm/versions/node/v22.16.0/bin/node",
+            runtimeExecutable = node_path,
             envFile = "${workspaceFolder}/.env",
         },
         {
@@ -105,24 +108,91 @@ require("dap-vscode-js").setup({
         }
     }
 
-    -- DAP UI integration
-    local dapui = require("dapui")
+    -- DAP UI. Set up from here rather than from the plugin spec: if lazy.nvim
+    -- calls dapui.setup() while resolving nvim-dap's dependencies, dapui
+    -- require()s dap mid-load and the two loop.
+    require("dapui").setup({
+        controls = {
+            element = "repl",
+            enabled = true,
+            icons = {
+                disconnect = "",
+                pause = "",
+                play = "",
+                run_last = "",
+                step_back = "",
+                step_into = "",
+                step_out = "",
+                step_over = "",
+                terminate = ""
+            }
+        },
+        element_mappings = {},
+        expand_lines = true,
+        floating = {
+            border = "single",
+            mappings = {
+                close = {"q", "<Esc>"}
+            }
+        },
+        force_buffers = true,
+        icons = {
+            collapsed = "",
+            current_frame = "",
+            expanded = ""
+        },
+        layouts = {{
+            elements = {{
+                id = "scopes",
+                size = 0.5
+            }, {
+                id = "breakpoints",
+                size = 0.15
+            }, {
+                id = "stacks",
+                size = 0.15
+            }, {
+                id = "watches",
+                size = 0.15
+            }, {
+                id = "repl",
+                size = 0.05
+            }},
+            position = "right",
+            size = 40
+        }, {
+            elements = {{
+                id = "console",
+                size = 1
+            }},
+            position = "bottom",
+            size = 20
+        }},
+        mappings = {
+            edit = "e",
+            expand = {"<CR>", "<2-LeftMouse>"},
+            open = "o",
+            remove = "d",
+            repl = "r",
+            toggle = "t"
+        },
+        render = {
+            indent = 1,
+            max_value_lines = 100
+        }
+    })
+
     dap.listeners.before.attach.dapui_config = function()
-        dapui.open()
+        require("dapui").open()
     end
     dap.listeners.before.launch.dapui_config = function()
-        dapui.open()
+        require("dapui").open()
     end
 
-require("dap").adapters["pwa-node"] = {
-  type = "server",
-  host = "localhost",
-  port = "${port}",
-  executable = {
-    command = "js-debug-adapter", -- As I'm using mason, this will be in the path
-    args = {"${port}"},
-  }
-}
+    -- NOTE: do not override dap.adapters["pwa-node"] here. dap-vscode-js
+    -- already registers it using node_path/debugger_path above; overriding it
+    -- with `command = "js-debug-adapter"` points at a binary that isn't
+    -- installed and makes `:checkhealth dap` fail.
 
     -- Uncomment these if you want DAP UI to close automatically
     -- dap.listeners.before.event_terminated.dapui_config = function()

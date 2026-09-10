@@ -1,118 +1,47 @@
+-- Single source of truth for the debug stack. nvim-dap used to be declared in
+-- three places (twice here and once in lsp.lua), and this file mixed packer
+-- keys (`opt`, `run`, `module`) with lazy.nvim ones, which silently dropped the
+-- vscode-js-debug build step.
 return {
-    {
-        "mfussenegger/nvim-dap",
-        dependencies = {
-            "rcarriga/nvim-dap-ui",
-            "theHamsta/nvim-dap-virtual-text",
-            "nvim-telescope/telescope-dap.nvim",
-            "mfussenegger/nvim-dap-python",
-            "williamboman/mason.nvim",
-            "jay-babu/mason-nvim-dap.nvim",
-	"mxsdev/nvim-dap-vscode-js", module = { "dap-vscode-js" } ,
-    {
-      "microsoft/vscode-js-debug",
-      opt = true,
-      run = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out" 
-    },
-    },
-        config = function()
-            -- DAP configuration is now in a separate file
-            -- See lua/config/dap_config.lua
-        end,
-    },
-    {
-        "rcarriga/nvim-dap-ui",
-        config = function()
-            require("dapui").setup({
-                controls = {
-                    element = "repl",
-                    enabled = true,
-                    icons = {
-                        disconnect = "",
-                        pause = "",
-                        play = "",
-                        run_last = "",
-                        step_back = "",
-                        step_into = "",
-                        step_out = "",
-                        step_over = "",
-                        terminate = ""
-                    }
-                },
-                element_mappings = {},
-                expand_lines = true,
-                floating = {
-                    border = "single",
-                    mappings = {
-                        close = {"q", "<Esc>"}
-                    }
-                },
-                force_buffers = true,
-                icons = {
-                    collapsed = "",
-                    current_frame = "",
-                    expanded = ""
-                },
-                layouts = {{
-                    elements = {{
-                        id = "scopes",
-                        size = 0.5
-                    }, {
-                        id = "breakpoints",
-                        size = 0.15
-                    }, {
-                        id = "stacks",
-                        size = 0.15
-                    }, {
-                        id = "watches",
-                        size = 0.15
-                    }, {
-                        id = "repl",
-                        size = 0.05
-                    }},
-                    position = "right",
-                    size = 40
-                }, {
-                    elements = {{
-                        id = "console",
-                        size = 1
-                    }},
-                    position = "bottom",
-                    size = 20
-                }},
-                mappings = {
-                    edit = "e",
-                    expand = {"<CR>", "<2-LeftMouse>"},
-                    open = "o",
-                    remove = "d",
-                    repl = "r",
-                    toggle = "t"
-                },
-                render = {
-                    indent = 1,
-                    max_value_lines = 100
-                }
-            })
-        end,
-    },
-    {
-        "theHamsta/nvim-dap-virtual-text",
-        config = function()
-            require("nvim-dap-virtual-text").setup()
-        end,
-    },
-    {
-        "mfussenegger/nvim-dap-python",
-    },
-    {
-        "jay-babu/mason-nvim-dap.nvim",
-        dependencies = {
-            "williamboman/mason.nvim",
-        },
-    },
-    {
-	    "mfussenegger/nvim-dap",
-	    "mxsdev/nvim-dap-vscode-js",
-	    "microsoft/vscode-js-debug",
-    }
+	{
+		"mfussenegger/nvim-dap",
+		-- No event/cmd: the <F5>/<leader>d* mappings in config/keybindings.lua all
+		-- go through require("dap"), which lazy.nvim's module loader picks up.
+		lazy = true,
+		dependencies = {
+			"rcarriga/nvim-dap-ui",
+			"nvim-neotest/nvim-nio",
+			"theHamsta/nvim-dap-virtual-text",
+			{ "mfussenegger/nvim-dap-python", lazy = true },
+			"jay-babu/mason-nvim-dap.nvim",
+			"williamboman/mason.nvim",
+			"mxsdev/nvim-dap-vscode-js",
+			{
+				"microsoft/vscode-js-debug",
+				-- `build`, not packer's `run`: without it the adapter is never
+				-- bundled and dap reports `js-debug-adapter` as not executable.
+				build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
+			},
+			"nvim-telescope/telescope-dap.nvim",
+		},
+		config = function()
+			require("config.dap_config").setup()
+			-- Registered here rather than from Telescope's own config so that
+			-- opening Telescope doesn't pull in the whole debug stack.
+			pcall(function()
+				require("telescope").load_extension("dap")
+			end)
+		end,
+	},
+	{
+		"rcarriga/nvim-dap-ui",
+		lazy = true,
+		dependencies = { "nvim-neotest/nvim-nio" },
+		-- Deliberately no `opts`: letting lazy.nvim call dapui.setup() while
+		-- resolving nvim-dap's dependencies makes dapui require("dap") mid-load,
+		-- which loops back into this file's config. dap_config.setup() calls it.
+	},
+	-- nvim-dap-virtual-text is set up from lua/config/dap_config.lua, so no
+	-- `opts` here on purpose (it would call setup() twice).
+	{ "theHamsta/nvim-dap-virtual-text", lazy = true },
 }

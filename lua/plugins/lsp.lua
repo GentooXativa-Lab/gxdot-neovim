@@ -1,16 +1,12 @@
+-- LSP only. The debug stack lives in lua/plugins/debugger.lua.
 return {
 	{
 		"neovim/nvim-lspconfig",
-		opts = {
-			servers = {
-				marksman = {},
-			},
-		},
 		dependencies = {
-			{
-				"williamboman/mason.nvim",
-				opts = { ensure_installed = { "markdownlint-cli2", "markdown-toc" } },
-			},
+			-- `opts` (even empty) is what makes lazy.nvim call mason.setup().
+			-- Without it mason-lspconfig warns that mason was never set up and
+			-- refuses every entry in ensure_installed.
+			{ "williamboman/mason.nvim", opts = {} },
 			"williamboman/mason-lspconfig.nvim",
 		},
 		config = function()
@@ -19,7 +15,7 @@ return {
 
 			local mason_lspconfig = require("mason-lspconfig")
 			mason_lspconfig.setup({
-				ensure_installed = { "pyright", "ts_ls" },
+				ensure_installed = { "pyright", "ts_ls", "marksman" },
 			})
 
 			-- Neovim 0.11+ native LSP configuration
@@ -34,31 +30,12 @@ return {
 				capabilities = capabilities,
 			})
 			vim.lsp.enable("ts_ls")
+
+			-- Markdown
+			vim.lsp.config("marksman", {
+				capabilities = capabilities,
+			})
+			vim.lsp.enable("marksman")
 		end,
 	},
-	{
-		"mfussenegger/nvim-dap",
-		event = "VeryLazy",
-		dependencies = {
-			"rcarriga/nvim-dap-ui",
-			"nvim-neotest/nvim-nio",
-			"jay-babu/mason-nvim-dap.nvim",
-			"theHamsta/nvim-dap-virtual-text",
-		},
-	},
-	{
-		"rcarriga/nvim-dap-ui",
-		event = "VeryLazy",
-		dependencies = { "mfussenegger/nvim-dap" },
-	},
-	{
-		"nvim-telescope/telescope-dap.nvim",
-		event = "VeryLazy",
-		dependencies = { "mfussenegger/nvim-dap", "nvim-telescope/telescope.nvim" },
-	},
-    {
-        "nvim-telescope/telescope-symbols.nvim",
-        event = "VeryLazy",
-        dependencies = { "nvim-telescope/telescope.nvim" }
-    }
 }
