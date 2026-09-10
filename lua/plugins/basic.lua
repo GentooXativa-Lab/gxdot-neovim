@@ -7,12 +7,6 @@ return { -- the colorscheme should be available when starting Neovim
 
 	},
 	{
-		"nvim-neorg/neorg",
-		lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
-		version = "*", -- Pin Neorg to the latest stable release
-		config = true,
-	},
-	{
 		"dstein64/vim-startuptime",
 		-- lazy-load on a command
 		cmd = "StartupTime",
