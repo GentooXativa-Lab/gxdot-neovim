@@ -1,16 +1,9 @@
-return { -- the colorscheme should be available when starting Neovim
-	{ 
+return {
+	{
 		"folke/which-key.nvim",
 		opts = {
-			preset = "modern"
+			preset = "modern",
 		},
-
-	},
-	{
-		"nvim-neorg/neorg",
-		lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
-		version = "*", -- Pin Neorg to the latest stable release
-		config = true,
 	},
 	{
 		"dstein64/vim-startuptime",
