@@ -3,15 +3,13 @@ local M = {}
 M.setup = function()
     local dap = require("dap")
     local mason_dap = require("mason-nvim-dap")
-    local dap_virtual_text = require("nvim-dap-virtual-text")
-    local ui = require("dapui")
 
     -- Setup dap-python
     require("dap-python").setup("uv")
     require("dap-python").test_runner = "pytest"
 
-    -- Dap Virtual Text
-    dap_virtual_text.setup()
+    -- nvim-dap-virtual-text is set up from its own spec in
+    -- lua/plugins/debugger.lua; calling setup() here too ran it twice.
 
     -- Mason-DAP setup
     -- `js-debug-adapter` is the Mason package; `vscode-js-debug` is the source repo
@@ -122,12 +120,14 @@ M.setup = function()
     }
 
     -- DAP UI integration
-    local dapui = require("dapui")
+    -- require()d inside the callbacks so nvim-dap-ui only loads when a debug
+    -- session actually starts, and never while nvim-dap itself is still
+    -- loading (which would deadlock the two modules).
     dap.listeners.before.attach.dapui_config = function()
-        dapui.open()
+        require("dapui").open()
     end
     dap.listeners.before.launch.dapui_config = function()
-        dapui.open()
+        require("dapui").open()
     end
 
     -- pwa-node adapter — js-debug-adapter is in $PATH thanks to Mason
