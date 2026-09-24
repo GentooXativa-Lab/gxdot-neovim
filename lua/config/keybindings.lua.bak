@@ -26,8 +26,6 @@ function M.setup()
     map("i", "<F7>", '<cmd>lua require("dap").step_into()<CR>', opt)
     map("n", "<F8>", '<cmd>lua require("dap").step_out()<CR>', opt)
     map("i", "<F8>", '<cmd>lua require("dap").step_out()<CR>', opt)
-    map("n", "<F9>", '<cmd>lua require("dap").toggle_breakpoint()<CR>', opt)
-    map("i", "<F9>", '<cmd>lua require("dap").toggle_breakpoint()<CR>', opt)
 
     map("n", "<leader>Vc", ':source $MYVIMRC<CR>', opt)
 
@@ -39,9 +37,7 @@ function M.setup()
     map("n", "<leader>dn", '<cmd>lua require("dap").step_over()<CR>', opt)
     map("n", "<leader>di", '<cmd>lua require("dap").step_into()<CR>', opt)
     map("n", "<leader>do", '<cmd>lua require("dap").step_out()<CR>', opt)
-    -- `dap.close()` only drops the client connection and leaves the debuggee
-    -- running; `terminate()` is what actually ends the session.
-    map("n", "<leader>ds", '<cmd>lua require("dap").terminate()<CR>', opt)
+    map("n", "<leader>ds", '<cmd>lua require("dap").close()<CR>', opt)
     map("n", "<leader>dl", '<cmd>lua require("dap").run_last()<CR>', opt)
     map("n", "<leader>dp", '<cmd>lua require("dap").pause()<CR>', opt)
     map("n", "<leader>da", '<cmd>lua require("dap").attach()<CR>', opt)
@@ -70,12 +66,6 @@ function M.setup()
     map("n", "<leader>dF", '<cmd>Telescope dap frames<CR>', opt)
     map("n", "<leader>dC", '<cmd>Telescope dap configurations<CR>', opt)
     map("n", "<leader>dV", '<cmd>Telescope dap variables<CR>', opt)
-
-    -- Overseer (build / test tasks). `<leader>o` was unused.
-    map("n", "<leader>ob", "<cmd>OverseerRun<CR>", opt)
-    map("n", "<leader>oo", "<cmd>OverseerToggle<CR>", opt)
-    map("n", "<leader>oq", "<cmd>OverseerQuickAction<CR>", opt)
-    map("n", "<leader>oc", "<cmd>OverseerRunCmd<CR>", opt)
 
     -- LSP formatting
     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.format()<CR>', opt)
@@ -273,7 +263,6 @@ function M.setup_snacks_keybindings()
     map("n", "<leader>uh", function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end,
         { desc = "Toggle Inlay Hints" })
     map("n", "<leader>uT", "<cmd>TSJToggle<cr>", { desc = "Toggle Treesitter" })
-    map("n", "<leader>ut", "<cmd>TransparentToggle<cr>", { desc = "Toggle Transparency" })
 end
 
 return M

@@ -17,11 +17,7 @@ M.setup = function()
     -- `js-debug-adapter` is the Mason package; `vscode-js-debug` is the source repo
     -- (Microsoft) and is NOT a Mason package — it was silently ignored before.
     mason_dap.setup({
-        -- DAP ADAPTER names only. `ruff` and `copilot-language-server` used to be
-        -- listed here and were silently ignored: they are LSP/lint tools, not
-        -- debug adapters. `ruff` is installed by mason-tool-installer instead.
-        -- `cppdbg` is mason-nvim-dap's alias for the `cpptools` package.
-        ensure_installed = {"cppdbg", "python", "js-debug-adapter"},
+        ensure_installed = {"cppdbg", "python", "ruff", "copilot-language-server", "js-debug-adapter"},
         automatic_installation = true,
         handlers = {
             function(config)
@@ -140,12 +136,6 @@ M.setup = function()
             args = {"${port}"},
         }
     }
-
-    -- C/C++ (cppdbg + gdb). Registered LAST on purpose: mason-nvim-dap's
-    -- `default_setup` also installs a `cppdbg` adapter and a default
-    -- `configurations.cpp`, and this overwrites both so the <F5> menu shows one
-    -- set of entries instead of two.
-    require("config.dap_cpp").setup()
 
     -- Uncomment these if you want DAP UI to close automatically when the session ends
     -- dap.listeners.before.event_terminated.dapui_config = function()
